@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Bug Tracker</title>
+	<style>
+		#wrapper {
+			width: 800px;
+			border: 1px solid black;
+		}
+
+		#titlebar {
+			background-color: beige;
+			font-size: 2em;
+			padding: 0.5em;
+		}
+
+		.report {
+			margin: 1em;
+			border: 1px solid black;
+			width: 400px;
+		}
+
+			.report .title {
+				background-color: cornflowerblue;
+				color: white;
+				padding: 0.25em;
+				position: relative;
+			}
+
+			.report .body p {
+				margin: 0.5em;
+			}
+
+			.report .title .status {
+				display: inline-block;
+				right: 0px;
+				position: absolute;
+				margin-right: 0.5em;
+			}
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<div id="titlebar">Bug tracker</div>
+		<div id="content"></div>
+	</div>
+	<script>
+		function BugTracker() {
+			return (() => {
+				let reports = [];
+				let reportId = 0;
+				let outputElement = undefined;
+				function displayReports() {
+					if (!outputElement) return;
+					removeReports();
+					for (let report of reports) {
+						let reportDiv = document.createElement('div');
+						reportDiv.id = `report_${report.ID}`;
+						reportDiv.className = 'report';
+						let reportBody = document.createElement('div');
+						reportBody.className = 'body';
+						let reportDescription = document.createElement('p');
+						reportDescription.innerHTML = report.description;
+						reportBody.appendChild(reportDescription);
+						reportDiv.appendChild(reportBody);
+						let reportTitle = document.createElement('div');
+						reportTitle.className = 'title';
+						let reportAuthor = document.createElement('span');
+						reportAuthor.className = 'author';
+						reportAuthor.innerHTML = `Submitted by: ${report.author}`;
+						reportTitle.appendChild(reportAuthor);
+						let reportStatus = document.createElement('span');
+						reportStatus.className = 'status';
+						reportStatus.innerHTML = `${report.status} | ${report.severity}`;
+						reportTitle.appendChild(reportStatus);
+						reportDiv.appendChild(reportTitle);
+						outputElement.appendChild(reportDiv);
+					}
+				}
+				function removeReports() {
+					if (!outputElement) return;
+					Array.from(outputElement.children).forEach(c => {
+						if (c.classList.contains('report')) outputElement.removeChild(c);
+					});
+				}
+				function validateId(id) {
+					if (!Number.isInteger(id)) throw new TypeError('ID must be an integer!');
+					if (id < 0) throw new RangeError('ID out of range!');
+				}
+				return {
+					output: (selector) => {
+						removeReports(outputElement);
+						outputElement = document.querySelector(selector);
+						displayReports();
+					},
+					remove: (id) => {
+						validateId(id);
+						reports = reports.filter(r => r.ID !== id);
+						displayReports();
+					},
+					report: (author, description, reproducible, severity) => {
+						reports.push({
+							ID: reportId++,
+							author,
+							description,
+							reproducible,
+							severity,
+							status: 'Open'
+						});
+						displayReports();
+					},
+					setStatus: (id, status) => {
+						validateId(id);
+						let report = reports.find(r => r.ID === id);
+						if (!report) throw new ReferenceError(`No report with ID:${id} on record.`)
+						report.status = status;
+						displayReports();
+					},
+					sort: (method = 'ID') => {
+						if (reports.length > 1) {
+							switch (method.toUpperCase()) {
+								case 'AUTHOR':
+									reports.sort((r1, r2) => r1.author.localeCompare(r2.author));
+									break;
+								case 'SEVERITY':
+									reports.sort((r1, r2) => r1.severity - r2.severity);
+									break;
+								default: reports.sort((r1, r2) => r1.ID - r2.ID);
+							}
+							displayReports();
+						}
+					}
+				}
+			})();
+		}
+	</script>
+</body>
+</html>
