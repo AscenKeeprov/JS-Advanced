@@ -1,0 +1,13 @@
+{
+  "name": "warehouse",
+  "version": "0.0.0",
+  "description": "Warehouse",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2"
+  }
+}
