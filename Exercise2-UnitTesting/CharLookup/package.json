@@ -1,0 +1,13 @@
+{
+  "name": "char-lookup",
+  "version": "0.0.0",
+  "description": "CharLookup",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.0"
+  }
+}
