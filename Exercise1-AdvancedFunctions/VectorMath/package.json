@@ -1,0 +1,9 @@
+{
+  "name": "vector-math",
+  "version": "0.0.0",
+  "description": "VectorMath",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  }
+}
